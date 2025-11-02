@@ -7,130 +7,133 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 10000;
 
+// ✅ Ruta principal de estado
 app.get("/", (req, res) => {
   res.send("✅ Idexia Metricool API activa y lista para recibir datos.");
 });
 
+// 🧠 Helper: función genérica para obtener métricas
+const getMetrics = async (url) => {
+  const response = await axios.get(url, {
+    params: {
+      start: "20251001",
+      end: "20251101",
+      timezone: "Europe/Madrid",
+      userId: process.env.USER_ID,
+      blogId: process.env.BLOG_ID,
+    },
+    headers: { "X-Mc-Auth": process.env.METRICOOL_TOKEN },
+  });
+  return {
+    cpm: response.data.cpm,
+    cpc: response.data.cpc,
+    ctr: response.data.ctr,
+  };
+};
+
 // === META ADS ===
 app.get("/api/meta", async (req, res) => {
   try {
-    const response = await axios.get("https://app.metricool.com/api/stats/aggregations/fbAdsPerformance", {
-      params: {
-        start: "20251001",
-        end: "20251101",
-        timezone: "Europe/Madrid",
-        userId: process.env.USER_ID,
-        blogId: process.env.BLOG_ID
-      },
-      headers: { "X-Mc-Auth": process.env.METRICOOL_TOKEN }
-    });
-
-    res.json({
-      cpm: response.data.cpm,
-      cpc: response.data.cpc,
-      ctr: response.data.ctr
-    });
+    const data = await getMetrics(
+      "https://app.metricool.com/api/stats/aggregations/fbAdsPerformance"
+    );
+    res.json(data);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({
+      platform: "Meta Ads",
+      error: error.message,
+      details: error.response?.data || "Error desconocido",
+    });
   }
 });
 
 // === GOOGLE ADS ===
 app.get("/api/google", async (req, res) => {
   try {
-    const response = await axios.get("https://app.metricool.com/api/stats/aggregations/googleAdsPerformance", {
-      params: {
-        start: "20251001",
-        end: "20251101",
-        timezone: "Europe/Madrid",
-        userId: process.env.USER_ID,
-        blogId: process.env.BLOG_ID
-      },
-      headers: { "X-Mc-Auth": process.env.METRICOOL_TOKEN }
-    });
-
-    res.json({
-      cpm: response.data.cpm,
-      cpc: response.data.cpc,
-      ctr: response.data.ctr
-    });
+    const data = await getMetrics(
+      "https://app.metricool.com/api/stats/aggregations/googleAdsPerformance"
+    );
+    res.json(data);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({
+      platform: "Google Ads",
+      error: error.message,
+      details: error.response?.data || "Error desconocido",
+    });
   }
 });
 
 // === TIKTOK ADS ===
 app.get("/api/tiktok", async (req, res) => {
   try {
-    const response = await axios.get("https://app.metricool.com/api/stats/aggregations/tiktokAdsPerformance", {
-      params: {
-        start: "20251001",
-        end: "20251101",
-        timezone: "Europe/Madrid",
-        userId: process.env.USER_ID,
-        blogId: process.env.BLOG_ID
-      },
-      headers: { "X-Mc-Auth": process.env.METRICOOL_TOKEN }
-    });
-
-    res.json({
-      cpm: response.data.cpm,
-      cpc: response.data.cpc,
-      ctr: response.data.ctr
-    });
+    const data = await getMetrics(
+      "https://app.metricool.com/api/stats/aggregations/tiktokAdsPerformance"
+    );
+    res.json(data);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({
+      platform: "TikTok Ads",
+      error: error.message,
+      details: error.response?.data || "Error desconocido",
+    });
   }
 });
 
 // === LINKEDIN ADS ===
 app.get("/api/linkedin", async (req, res) => {
   try {
-    const response = await axios.get("https://app.metricool.com/api/stats/aggregations/linkedinAdsPerformance", {
-      params: {
-        start: "20251001",
-        end: "20251101",
-        timezone: "Europe/Madrid",
-        userId: process.env.USER_ID,
-        blogId: process.env.BLOG_ID
-      },
-      headers: { "X-Mc-Auth": process.env.METRICOOL_TOKEN }
-    });
-
-    res.json({
-      cpm: response.data.cpm,
-      cpc: response.data.cpc,
-      ctr: response.data.ctr
-    });
+    const data = await getMetrics(
+      "https://app.metricool.com/api/stats/aggregations/linkedinAdsPerformance"
+    );
+    res.json(data);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({
+      platform: "LinkedIn Ads",
+      error: error.message,
+      details: error.response?.data || "Error desconocido",
+    });
   }
 });
 
 // === YOUTUBE ADS ===
 app.get("/api/youtube", async (req, res) => {
   try {
-    const response = await axios.get("https://app.metricool.com/api/stats/aggregations/youtubeAdsPerformance", {
-      params: {
-        start: "20251001",
-        end: "20251101",
-        timezone: "Europe/Madrid",
-        userId: process.env.USER_ID,
-        blogId: process.env.BLOG_ID
-      },
-      headers: { "X-Mc-Auth": process.env.METRICOOL_TOKEN }
+    const data = await getMetrics(
+      "https://app.metricool.com/api/stats/aggregations/youtubeAdsPerformance"
+    );
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({
+      platform: "YouTube Ads",
+      error: error.message,
+      details: error.response?.data || "Error desconocido",
     });
+  }
+});
+
+// === 🔥 NUEVO: TODAS LAS PLATAFORMAS ===
+app.get("/api/all", async (req, res) => {
+  try {
+    const [meta, google, tiktok, linkedin, youtube] = await Promise.allSettled([
+      getMetrics("https://app.metricool.com/api/stats/aggregations/fbAdsPerformance"),
+      getMetrics("https://app.metricool.com/api/stats/aggregations/googleAdsPerformance"),
+      getMetrics("https://app.metricool.com/api/stats/aggregations/tiktokAdsPerformance"),
+      getMetrics("https://app.metricool.com/api/stats/aggregations/linkedinAdsPerformance"),
+      getMetrics("https://app.metricool.com/api/stats/aggregations/youtubeAdsPerformance"),
+    ]);
 
     res.json({
-      cpm: response.data.cpm,
-      cpc: response.data.cpc,
-      ctr: response.data.ctr
+      meta: meta.value || { error: meta.reason?.message },
+      google: google.value || { error: google.reason?.message },
+      tiktok: tiktok.value || { error: tiktok.reason?.message },
+      linkedin: linkedin.value || { error: linkedin.reason?.message },
+      youtube: youtube.value || { error: youtube.reason?.message },
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
-});
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`)
+);
