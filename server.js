@@ -5,7 +5,7 @@ import axios from "axios";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000; // 🔹 Cambiado para Render
 
 // Ruta principal para comprobar que la API está activa
 app.get("/", (req, res) => {
@@ -40,6 +40,7 @@ app.get("/api/meta", async (req, res) => {
   }
 });
 
-app.listen(PORT, () =>
-  console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`)
-);
+// 🔹 Importante: escuchar en 0.0.0.0 para Render
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
+});
