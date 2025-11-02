@@ -1,18 +1,29 @@
 {
   "name": "idexia-metricool",
   "version": "1.0.0",
-  "description": "Conector Idexia Marketing ↔ Metricool",
+  "description": "Conector Idexia Marketing ↔ Metricool API",
   "type": "module",
-  "main": "fetch_meta_ads.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node fetch_meta_ads.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "test": "echo \"No test specified\" && exit 1"
   },
-  "keywords": ["idexia", "metricool", "marketing", "analytics"],
+  "keywords": [
+    "idexia",
+    "metricool",
+    "marketing",
+    "analytics",
+    "express",
+    "api"
+  ],
   "author": "IdexGroup",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.19.2",
     "axios": "^1.7.2",
     "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
